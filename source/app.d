@@ -54,11 +54,10 @@ void main(string[] arguments)
 {
 	auto criticalItems = getCriticalItems();
 
-	//writeln(criticalItems);
 	writeln("You have ", criticalItems.length, " item(s) to review!");
+
 	foreach(currItem; criticalItems)
 	{
-		//writeln(currItem.type);
 		writeln(currItem);
 	}
 }
