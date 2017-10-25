@@ -4,3 +4,4 @@ copyright "Copyright © 2017"
 authors "Paul Crane"
 
 dependency "requests" version="~>0.5.3"
+dependency "dapplicationbase" version="*"
