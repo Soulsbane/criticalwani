@@ -65,9 +65,7 @@ void main(string[] arguments)
 	auto app = new CriticalWaniApp;
 
 	app.create("Raijinsoft", "criticalwani");
-	app.loadOptions();
 	app.handleCmdLineArguments(arguments);
-	app.saveOptions();
 
 	if(app.hasApiKey())
 	{
@@ -79,4 +77,6 @@ void main(string[] arguments)
 			writeln(currItem);
 		}
 	}
+
+	app.saveOptions();
 }
