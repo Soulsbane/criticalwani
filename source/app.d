@@ -20,16 +20,17 @@ struct CriticalItem
 
 struct Options
 {
+	@GetOptOptions("Set wanikani API key", "k", "key")
 	string apiKey;
 }
 
 class CriticalWaniApp : Application!Options
 {
-	CriticalItem[] getCriticalItems(const bool sorted = true)
+	CriticalItem[] getCriticalItems(const string apiKey, const bool sorted = true)
 	{
-
 		// NOTE: The last number is the percentage threshold.
-		string content = cast(string)getContent("https://www.wanikani.com/api/user/696c570e8a176bd18779361177455993/critical-items/75");
+		immutable string apiUrl = "https://www.wanikani.com/api/user/" ~ apiKey ~ "/critical-items/75";
+		string content = cast(string)getContent(apiUrl);
 		JSONValue[string] document = parseJSON(content).object;
 		JSONValue[] requestedInfo = document["requested_information"].array;
 		CriticalItem[] criticalItems;
@@ -62,12 +63,20 @@ class CriticalWaniApp : Application!Options
 void main(string[] arguments)
 {
 	auto app = new CriticalWaniApp;
-	auto criticalItems = app.getCriticalItems();
 
-	writeln("You have ", criticalItems.length, " item(s) to review!");
+	app.create("Raijinsoft", "criticalwani");
+	app.loadOptions();
+	app.handleCmdLineArguments(arguments);
+	app.saveOptions();
 
-	foreach(currItem; criticalItems)
+	if(app.hasApiKey())
 	{
-		writeln(currItem);
+		auto criticalItems = app.getCriticalItems(app.options_.getApiKey());
+		writeln("You have ", criticalItems.length, " item(s) to review!");
+
+		foreach(currItem; criticalItems)
+		{
+			writeln(currItem);
+		}
 	}
 }
