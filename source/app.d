@@ -67,9 +67,9 @@ void main(string[] arguments)
 	app.create("Raijinsoft", "criticalwani");
 	app.handleCmdLineArguments(arguments);
 
-	if(app.hasApiKey())
+	if(app.options.hasApiKey() && !app.isHelpCommand())
 	{
-		auto criticalItems = app.getCriticalItems(app.options_.getApiKey());
+		auto criticalItems = app.getCriticalItems(app.options.getApiKey());
 		writeln("You have ", criticalItems.length, " item(s) to review!");
 
 		foreach(currItem; criticalItems)
