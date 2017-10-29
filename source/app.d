@@ -58,6 +58,20 @@ class CriticalWaniApp : Application!Options
 
 		return criticalItems;
 	}
+
+	void startReview()
+	{
+		if(options.hasApiKey() && !isHelpCommand())
+		{
+			auto criticalItems = getCriticalItems(options.getApiKey());
+			writeln("You have ", criticalItems.length, " item(s) to review!");
+
+			foreach(currItem; criticalItems)
+			{
+				writeln(currItem);
+			}
+		}
+	}
 }
 
 void main(string[] arguments)
@@ -66,17 +80,6 @@ void main(string[] arguments)
 
 	app.create("Raijinsoft", "criticalwani");
 	app.handleCmdLineArguments(arguments);
-
-	if(app.options.hasApiKey() && !app.isHelpCommand())
-	{
-		auto criticalItems = app.getCriticalItems(app.options.getApiKey());
-		writeln("You have ", criticalItems.length, " item(s) to review!");
-
-		foreach(currItem; criticalItems)
-		{
-			writeln(currItem);
-		}
-	}
-
+	app.startReview();
 	app.saveOptions();
 }
