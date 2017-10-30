@@ -29,7 +29,7 @@ class CriticalWaniApp : Application!Options
 	CriticalItem[] getCriticalItems(const string apiKey, const bool sorted = true)
 	{
 		// NOTE: The last number is the percentage threshold.
-		immutable string apiUrl = "https://www.wanikani.com/api/user/" ~ apiKey ~ "/critical-items/75";
+		immutable string apiUrl =  API_URL ~ apiKey ~ "/critical-items/" ~ percentage_;
 		string content = cast(string)getContent(apiUrl);
 		JSONValue[string] document = parseJSON(content).object;
 		JSONValue[] requestedInfo = document["requested_information"].array;
@@ -72,6 +72,10 @@ class CriticalWaniApp : Application!Options
 			}
 		}
 	}
+
+private:
+	immutable API_URL = "https://www.wanikani.com/api/user/";
+	string percentage_ = "75";
 }
 
 void main(string[] arguments)
