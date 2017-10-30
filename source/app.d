@@ -26,6 +26,12 @@ struct Options
 
 class CriticalWaniApp : Application!Options
 {
+	override void onCreate()
+	{
+		startReview();
+		saveOptions();
+	}
+
 	CriticalItem[] getCriticalItems(const string apiKey, const bool sorted = true)
 	{
 		// NOTE: The last number is the percentage threshold.
@@ -81,9 +87,5 @@ private:
 void main(string[] arguments)
 {
 	auto app = new CriticalWaniApp;
-
-	app.create("Raijinsoft", "criticalwani");
-	app.handleCmdLineArguments(arguments);
-	app.startReview();
-	app.saveOptions();
+	app.create("Raijinsoft", "criticalwani", arguments);
 }
