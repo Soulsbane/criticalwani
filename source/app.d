@@ -23,7 +23,7 @@ struct Options
 	@GetOptOptions("Set wanikani API key", "k", "key")
 	string apiKey;
 	@GetOptOptions("Wether to short by type. Radicals", "s", "sort")
-	bool sorted;
+	bool sorted = true;
 }
 
 class CriticalWaniApp : Application!Options
