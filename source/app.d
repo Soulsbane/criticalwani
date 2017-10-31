@@ -22,6 +22,8 @@ struct Options
 {
 	@GetOptOptions("Set wanikani API key", "k", "key")
 	string apiKey;
+	@GetOptOptions("Wether to short by type. Radicals", "s", "sort")
+	bool sorted;
 }
 
 class CriticalWaniApp : Application!Options
@@ -32,7 +34,7 @@ class CriticalWaniApp : Application!Options
 		saveOptions();
 	}
 
-	CriticalItem[] getCriticalItems(const string apiKey, const bool sorted = true)
+	CriticalItem[] getCriticalItems(const string apiKey)
 	{
 		// NOTE: The last number is the percentage threshold.
 		immutable string apiUrl =  API_URL ~ apiKey ~ "/critical-items/" ~ percentage_;
@@ -56,7 +58,7 @@ class CriticalWaniApp : Application!Options
 			criticalItems ~= criticalItem;
 		}
 
-		if(sorted)
+		if(options.getSorted())
 		{
 			alias criticalItemsSorter = (x, y) => x.type > y.type;
 			criticalItems.sort!(criticalItemsSorter);//.release;
