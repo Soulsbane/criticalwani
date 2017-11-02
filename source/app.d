@@ -60,7 +60,8 @@ class CriticalWaniApp : Application!Options
 
 		if(options.getSorted())
 		{
-			alias criticalItemsSorter = (x, y) => x.type > y.type;
+			//alias criticalItemsSorter = (x, y) => x.type > y.type; // Vocab -> Radical -> Kanji order.
+			alias criticalItemsSorter = (x, y) => x.type < y.type; // Kanji -> Radical - Vocab order.
 			criticalItems.sort!(criticalItemsSorter);//.release;
 		}
 
