@@ -34,50 +34,79 @@ class CriticalWaniApp : Application!Options
 		saveOptions();
 	}
 
-	CriticalItem[] getCriticalItems(const string apiKey)
+	string downloadCriticalList(const string apiKey)
 	{
-		// NOTE: The last number is the percentage threshold.
+		// NOTE: percentage_ is the percentage threshold of critical items to fetch.
 		immutable string apiUrl =  API_URL ~ apiKey ~ "/critical-items/" ~ percentage_;
-		string content = cast(string)getContent(apiUrl);
-		JSONValue[string] document = parseJSON(content).object;
-		JSONValue[] requestedInfo = document["requested_information"].array;
-		CriticalItem[] criticalItems;
+		string content;
 
-		foreach(info; requestedInfo)
+		try
 		{
-			CriticalItem criticalItem;
-			JSONValue[string] criticalItemObject = info.object;
-
-			criticalItem.meaning = criticalItemObject["meaning"].str;
-			criticalItem.type = criticalItemObject["type"].str;
-			criticalItem.level = criticalItemObject["level"].integer;
-			criticalItem.percentage = criticalItemObject["percentage"].str;
-			criticalItem.character = criticalItemObject["character"].str.ifThrown!JSONException("No Character");
-			criticalItem.kana = criticalItemObject["kana"].str.ifThrown!RangeError("No Kana"); // Kana field can be missing.
-
-			criticalItems ~= criticalItem;
+			content = cast(string)getContent(apiUrl);
+		}
+		catch(ConnectError ex)
+		{
+			return string.init;
 		}
 
-		if(options.getSorted())
+		return content;
+	}
+
+	bool getCriticalItems(const string apiKey)
+	{
+		immutable string content = downloadCriticalList(apiKey);
+
+		if(content)
 		{
-			//alias criticalItemsSorter = (x, y) => x.type > y.type; // Vocab -> Radical -> Kanji order.
-			alias criticalItemsSorter = (x, y) => x.type < y.type; // Kanji -> Radical - Vocab order.
-			criticalItems.sort!(criticalItemsSorter);//.release;
+			JSONValue[string] document = parseJSON(content).object;
+			JSONValue[] requestedInfo = document["requested_information"].array;
+
+			foreach(info; requestedInfo)
+			{
+				CriticalItem criticalItem;
+				JSONValue[string] criticalItemObject = info.object;
+
+				criticalItem.meaning = criticalItemObject["meaning"].str;
+				criticalItem.type = criticalItemObject["type"].str;
+				criticalItem.level = criticalItemObject["level"].integer;
+				criticalItem.percentage = criticalItemObject["percentage"].str;
+				criticalItem.character = criticalItemObject["character"].str.ifThrown!JSONException("No Character");
+				criticalItem.kana = criticalItemObject["kana"].str.ifThrown!RangeError("No Kana"); // Kana field can be missing.
+
+				criticalItems ~= criticalItem;
+			}
+
+			if(options.getSorted())
+			{
+				//alias criticalItemsSorter = (x, y) => x.type > y.type; // Vocab -> Radical -> Kanji order.
+				alias criticalItemsSorter = (x, y) => x.type < y.type; // Kanji -> Radical - Vocab order.
+				criticalItems.sort!(criticalItemsSorter);//.release;
+			}
+
+			return true;
 		}
 
-		return criticalItems;
+		return false;
 	}
 
 	void startReview()
 	{
 		if(options.hasApiKey() && !isHelpCommand())
 		{
-			auto criticalItems = getCriticalItems(options.getApiKey());
-			writeln("You have ", criticalItems.length, " item(s) to review!");
+			immutable bool success = getCriticalItems(options.getApiKey());
 
-			foreach(currItem; criticalItems)
+			if(success)
 			{
-				writeln(currItem);
+				writeln("You have ", criticalItems.length, " item(s) to review!");
+
+				foreach(currItem; criticalItems)
+				{
+					writeln(currItem);
+				}
+			}
+			else
+			{
+				writeln("Failed to download critical items list");
 			}
 		}
 	}
@@ -85,6 +114,7 @@ class CriticalWaniApp : Application!Options
 private:
 	immutable API_URL = "https://www.wanikani.com/api/user/";
 	string percentage_ = "75";
+	CriticalItem[] criticalItems;
 }
 
 void main(string[] arguments)
