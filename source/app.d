@@ -34,27 +34,17 @@ class CriticalWaniApp : Application!Options
 		saveOptions();
 	}
 
-	string downloadCriticalList(const string apiKey)
+	bool downloadCriticalList(const string apiKey)
 	{
+		Buffer!ubyte temp;
+
 		// NOTE: percentage_ is the percentage threshold of critical items to fetch.
 		immutable string apiUrl =  API_URL ~ apiKey ~ "/critical-items/" ~ percentage_;
-		string content;
-
-		try
-		{
-			content = cast(string)getContent(apiUrl);
-		}
-		catch(ConnectError ex)
-		{
-			return string.init;
-		}
-
-		return content;
-	}
-
-	bool getCriticalItems(const string apiKey)
-	{
-		immutable string content = downloadCriticalList(apiKey);
+		immutable string content = cast(string)getContent(apiUrl)
+			.ifThrown!ConnectError(temp)
+			.ifThrown!TimeoutException(temp)
+			.ifThrown!ErrnoException(temp)
+			.ifThrown!RequestException(temp);
 
 		if(content)
 		{
@@ -93,7 +83,7 @@ class CriticalWaniApp : Application!Options
 	{
 		if(options.hasApiKey() && !isHelpCommand())
 		{
-			immutable bool success = getCriticalItems(options.getApiKey());
+			immutable bool success = downloadCriticalList(options.getApiKey());
 
 			if(success)
 			{
