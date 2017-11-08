@@ -34,7 +34,7 @@ class CriticalWaniApp : Application!Options
 		saveOptions();
 	}
 
-	bool downloadCriticalList(const string apiKey)
+	bool buildCriticalItemsList(const string apiKey)
 	{
 		Buffer!ubyte temp;
 
@@ -83,7 +83,7 @@ class CriticalWaniApp : Application!Options
 	{
 		if(options.hasApiKey() && !isHelpCommand())
 		{
-			immutable bool success = downloadCriticalList(options.getApiKey());
+			immutable bool success = buildCriticalItemsList(options.getApiKey());
 
 			if(success)
 			{
