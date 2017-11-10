@@ -22,9 +22,9 @@ struct Options
 {
 	@GetOptOptions("Set wanikani API key", "k", "key")
 	string apiKey;
-	@GetOptOptions("What percentage to use for determining your critical items", "p", "percent")
+	@GetOptOptions("What percentage and below to use for determining your critical items.", "p", "percent")
 	string percentage = "75"; // NOTE: This is the percentage threshold of critical items to fetch.
-	@GetOptOptions("Wether to short by type. Radicals", "s", "sort")
+	@GetOptOptions("Whether to sort by type. Sorted order: Radicals -> Kanji -> Vocab.", "s", "sort")
 	bool sorted = true;
 }
 
