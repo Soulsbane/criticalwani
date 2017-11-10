@@ -104,7 +104,6 @@ class CriticalWaniApp : Application!Options
 
 private:
 	immutable API_URL = "https://www.wanikani.com/api/user/";
-	string percentage_ = "75";
 	CriticalItem[] criticalItems;
 }
 
