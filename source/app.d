@@ -22,6 +22,8 @@ struct Options
 {
 	@GetOptOptions("Set wanikani API key", "k", "key")
 	string apiKey;
+	@GetOptOptions("What percentage to use for determining your critical items", "p", "percent")
+	string percentage = "75"; // NOTE: This is the percentage threshold of critical items to fetch.
 	@GetOptOptions("Wether to short by type. Radicals", "s", "sort")
 	bool sorted = true;
 }
@@ -38,8 +40,7 @@ class CriticalWaniApp : Application!Options
 	{
 		Buffer!ubyte temp;
 
-		// NOTE: percentage_ is the percentage threshold of critical items to fetch.
-		immutable string apiUrl =  API_URL ~ apiKey ~ "/critical-items/" ~ percentage_;
+		immutable string apiUrl =  API_URL ~ apiKey ~ "/critical-items/" ~ options.getPercentage();
 		immutable string content = cast(string)getContent(apiUrl)
 			.ifThrown!ConnectError(temp)
 			.ifThrown!TimeoutException(temp)
