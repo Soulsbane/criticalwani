@@ -3,6 +3,8 @@ import std.json;
 import std.exception;
 import core.exception : RangeError;
 import std.algorithm;
+import std.string;
+import std.format;
 
 import requests;
 import dapplicationbase;
@@ -92,7 +94,17 @@ class CriticalWaniApp : Application!Options
 
 				foreach(currItem; criticalItems)
 				{
-					writeln(currItem);
+					write("Enter the reading: " ~ currItem.character);
+					immutable string answer = readln().strip.chomp;
+
+					if(answer == currItem.kana)
+					{
+						writeln("Correct. Great Job!");
+					}
+					else
+					{
+						writefln("%s is the wrong reading! The correct reading is: %s", answer, currItem.kana);
+					}
 				}
 			}
 			else
