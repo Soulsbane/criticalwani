@@ -85,7 +85,7 @@ class CriticalWaniApp : Application!Options
 
 	void checkKana(const string character, const string kana)
 	{
-		write("Enter the reading: " ~ character);
+		writef("Enter the reading for %s: ", character);
 		immutable string answer = readln().strip.chomp;
 
 		if(answer == kana)
@@ -100,7 +100,7 @@ class CriticalWaniApp : Application!Options
 
 	void checkMeaning(const string character, const string meaning)
 	{
-		write("Enter the meaning of: " ~ character);
+		writef("Enter the meaning for %s: ", character);
 		immutable string answer = readln().strip.chomp.toLower;
 
 		if(answer == meaning.toLower)
