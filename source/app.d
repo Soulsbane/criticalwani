@@ -83,6 +83,7 @@ class CriticalWaniApp : Application!Options
 		return false;
 	}
 
+	// TODO: Make use romaji also?
 	void checkKana(const string character, const string kana)
 	{
 		writef("Enter the reading for %s: ", character);
@@ -98,6 +99,7 @@ class CriticalWaniApp : Application!Options
 		}
 	}
 
+	// FIXME: Check for multiple meanings and compare.
 	void checkMeaning(const string character, const string meaning)
 	{
 		writef("Enter the meaning for %s: ", character);
