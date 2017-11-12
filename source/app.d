@@ -5,6 +5,7 @@ import core.exception : RangeError;
 import std.algorithm;
 import std.string;
 import std.format;
+import std.uni;
 
 import requests;
 import dapplicationbase;
@@ -97,6 +98,21 @@ class CriticalWaniApp : Application!Options
 		}
 	}
 
+	void checkMeaning(const string character, const string meaning)
+	{
+		write("Enter the meaning of: " ~ character);
+		immutable string answer = readln().strip.chomp.toLower;
+
+		if(answer == meaning.toLower)
+		{
+			writeln("Correct. Great Job!");
+		}
+		else
+		{
+			writefln("%s is the wrong meaning! The correct meaning is: %s", answer, meaning);
+		}
+	}
+
 	void startReview()
 	{
 		if(options.hasApiKey() && !isHelpCommand())
@@ -110,6 +126,7 @@ class CriticalWaniApp : Application!Options
 				foreach(currItem; criticalItems)
 				{
 					checkKana(currItem.character, currItem.kana);
+					checkMeaning(currItem.character, currItem.meaning);
 				}
 			}
 			else
