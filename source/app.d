@@ -82,6 +82,21 @@ class CriticalWaniApp : Application!Options
 		return false;
 	}
 
+	void checkKana(const string character, const string kana)
+	{
+		write("Enter the reading: " ~ character);
+		immutable string answer = readln().strip.chomp;
+
+		if(answer == kana)
+		{
+			writeln("Correct. Great Job!");
+		}
+		else
+		{
+			writefln("%s is the wrong reading! The correct reading is: %s", answer, kana);
+		}
+	}
+
 	void startReview()
 	{
 		if(options.hasApiKey() && !isHelpCommand())
@@ -94,17 +109,7 @@ class CriticalWaniApp : Application!Options
 
 				foreach(currItem; criticalItems)
 				{
-					write("Enter the reading: " ~ currItem.character);
-					immutable string answer = readln().strip.chomp;
-
-					if(answer == currItem.kana)
-					{
-						writeln("Correct. Great Job!");
-					}
-					else
-					{
-						writefln("%s is the wrong reading! The correct reading is: %s", answer, currItem.kana);
-					}
+					checkKana(currItem.character, currItem.kana);
 				}
 			}
 			else
