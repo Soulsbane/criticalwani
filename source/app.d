@@ -6,6 +6,7 @@ import std.algorithm;
 import std.string;
 import std.format;
 import std.uni;
+import std.array;
 
 import requests;
 import dapplicationbase;
@@ -84,6 +85,7 @@ class CriticalWaniApp : Application!Options
 	}
 
 	// TODO: Make use romaji also?
+	// FIXME: Handle multiple readings.
 	void checkKana(const string character, const string kana)
 	{
 		writef("Enter the reading for %s: ", character);
@@ -99,17 +101,23 @@ class CriticalWaniApp : Application!Options
 		}
 	}
 
-	// FIXME: Check for multiple meanings and compare.
 	void checkMeaning(const string character, const string meaning)
 	{
 		writef("Enter the meaning for %s: ", character);
 		immutable string answer = readln().strip.chomp.toLower;
+		bool correctAnswer;
 
-		if(answer == meaning.toLower)
+		foreach(value; meaning.toLower.split(","))
 		{
-			writeln("Correct. Great Job!");
+			if(answer == value)
+			{
+				writeln("Correct. Great Job!");
+				correctAnswer = true;
+				break;
+			}
 		}
-		else
+
+		if(!correctAnswer)
 		{
 			writefln("%s is the wrong meaning! The correct meaning is: %s", answer, meaning);
 		}
