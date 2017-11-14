@@ -30,6 +30,8 @@ struct Options
 	string percentage = "75"; // NOTE: This is the percentage threshold of critical items to fetch.
 	@GetOptOptions("Whether to sort by type. Sorted order: Radicals -> Kanji -> Vocab.", "s", "sort")
 	bool sorted = true;
+	@GetOptOptions("Always answer the meaning right after the reading.", "c", "consecutive")
+	bool consecutiveOrder = false;
 }
 
 class CriticalWaniApp : Application!Options
@@ -129,6 +131,28 @@ class CriticalWaniApp : Application!Options
 		}
 	}
 
+	void reviewInConsecutiveOrder()
+	{
+		foreach(currItem; criticalItems)
+		{
+			checkKana(currItem.character, currItem.kana);
+			checkMeaning(currItem.character, currItem.meaning);
+		}
+	}
+
+	void reviewInSeparateOrder()
+	{
+		foreach(currItem; criticalItems)
+		{
+			checkKana(currItem.character, currItem.kana);
+		}
+
+		foreach(currItem; criticalItems)
+		{
+			checkMeaning(currItem.character, currItem.meaning);
+		}
+	}
+
 	void startReview()
 	{
 		if(options.hasApiKey() && !isHelpCommand())
@@ -139,10 +163,13 @@ class CriticalWaniApp : Application!Options
 			{
 				writeln("You have ", criticalItems.length, " item(s) to review!");
 
-				foreach(currItem; criticalItems)
+				if(options.getConsecutiveOrder)
 				{
-					checkKana(currItem.character, currItem.kana);
-					checkMeaning(currItem.character, currItem.meaning);
+					reviewInConsecutiveOrder();
+				}
+				else
+				{
+					reviewInSeparateOrder();
 				}
 			}
 			else
