@@ -109,7 +109,7 @@ class CriticalWaniApp : Application!Options
 
 		foreach(value; meaning.toLower.split(","))
 		{
-			if(answer == value)
+			if(answer == value.strip.chomp)
 			{
 				writeln("Correct. Great Job!");
 				correctAnswer = true;
