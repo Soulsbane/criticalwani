@@ -85,17 +85,23 @@ class CriticalWaniApp : Application!Options
 	}
 
 	// TODO: Make use romaji also?
-	// FIXME: Handle multiple readings.
 	void checkKana(const string character, const string kana)
 	{
 		writef("Enter the reading for %s: ", character);
-		immutable string answer = readln().strip.chomp;
+		immutable string answer = readln().strip.chomp.toLower;
+		bool correctAnswer;
 
-		if(answer == kana)
+		foreach(value; kana.toLower.split(","))
 		{
-			writeln("Correct. Great Job!");
+			if(answer == value.strip.chomp)
+			{
+				writeln("Correct. Great Job!");
+				correctAnswer = true;
+				break;
+			}
 		}
-		else
+
+		if(!correctAnswer)
 		{
 			writefln("%s is the wrong reading! The correct reading is: %s", answer, kana);
 		}
