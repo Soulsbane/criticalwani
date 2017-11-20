@@ -109,6 +109,34 @@ class CriticalWaniApp : Application!Options
 		}
 	}
 
+	bool checkMeaningAnswer(const string answer, const string meaning)
+	{
+		immutable string correctAnswer = meaning.strip.chomp;
+		immutable size_t distance = 3;
+
+		// If the meaning is a small word we need to check for an exact match since misspellings in this case can change the meaning
+		if(correctAnswer.length < distance)
+		{
+			if(answer == correctAnswer)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			if(levenshteinDistance(answer, correctAnswer) < distance)
+			{
+				return true;
+			}
+
+			return false;
+		}
+	}
+
 	void checkMeaning(const string character, const string meaning)
 	{
 		writef("Enter the meaning for %s: ", character);
@@ -117,7 +145,7 @@ class CriticalWaniApp : Application!Options
 
 		foreach(value; meaning.toLower.split(","))
 		{
-			if(answer == value.strip.chomp)
+			if(checkMeaningAnswer(answer, value))
 			{
 				writeln("Correct. Great Job!");
 				correctAnswer = true;
