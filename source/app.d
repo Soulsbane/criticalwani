@@ -121,10 +121,8 @@ class CriticalWaniApp : Application!Options
 			{
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 		else
 		{
